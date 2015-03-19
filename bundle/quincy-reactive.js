@@ -32,8 +32,11 @@ Listener.prototype.resume = function() {
 };
 
 Listener.prototype.dispose = function() {
-  if (!this.events)  return;
-  this.events.remove(this);
+  if (this.events) this.events.remove(this);
+  this.clear();
+};
+
+Listener.prototype.clear = function() {
   this.events = this.fn = this.context = null;
 };
 
@@ -53,7 +56,7 @@ function EventStream(event) {
 }
 
 EventStream.prototype.forEach = function(fn, context) {
-  if (!QN.isFunction(fn)) throw new TypeError('Event stream listener not a function');
+  if (!QN.isFunction(fn)) throw new TypeError('function required for stream listener');
   var listener = new Listener(this, fn, context);
   this.listeners.push(listener);
 
@@ -72,7 +75,12 @@ EventStream.prototype.remove = function(listener) {
   return this;
 };
 
+function clearListener(l) {
+  l.clear();
+}
+
 EventStream.prototype.removeAll = function() {
+  QN.forEach(clearListener, this.listeners);
   this.listeners = [];
 };
 
