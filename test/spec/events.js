@@ -155,6 +155,23 @@ describe('events', function() {
       });
     });
 
+    describe('removeAll', function() {
+
+      it('should remove all current listeners', function() {
+        var es = new Events();
+        var spy1 = sinon.spy();
+        var spy2 = sinon.spy();
+
+        es.forEach(spy1);
+        es.forEach(spy2);
+        es.removeAll();
+        es.emit(10);
+        expect(spy1.called).to.be.false;
+        expect(es.listeners.length).to.equal(0);
+      });
+
+    });
+
     describe('emit', function() {
 
       var es, spy1, spy2, event;
